@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
+//定义复合/赋值/打印表达式等变量结构体
 A_stm A_CompoundStm(A_stm stm1, A_stm stm2) {
   A_stm s = checked_malloc(sizeof *s);
   s->kind=A_compoundStm; s->u.compound.stm1=stm1; s->u.compound.stm2=stm2;
@@ -59,7 +60,13 @@ A_expList A_LastExpList(A_exp last) {
   return e;
 }
 
-/* Tiger P8 problem2 */
+/* Tiger P8 problem2 
+一个简单的符号表，使用链表结构来存储变量和它们的整数值。
+Table_函数用于创建新的符号表条目，
+GetIntAndTable函数用于获取一个整数值和符号表的组合，
+update函数用于更新符号表中的某个变量值，
+lookup函数用于在符号表中查找变量的值。
+*/
 
 Table_ Table(string id, int value, struct table *tail) {
   Table_ t = checked_malloc(sizeof *t);
@@ -88,14 +95,17 @@ int lookup(Table_ t, string key) {
 }
 
 Table_ interpStm(A_stm s, Table_ t) {
+  //处理复合表达式
   if(s->kind == A_compoundStm) {
     t = interpStm(s->u.compound.stm1, t);
     t = interpStm(s->u.compound.stm2, t);
     return t;
+     //处理赋值表达式
   } else if(s->kind == A_assignStm) {
     struct IntAndTable it = interpExp(s->u.assign.exp, t);
     Table_ newt = update(it.t, s->u.assign.id, it.i);
     return newt;
+     //处理打印表达式
   } else if(s->kind == A_printStm) {
     A_expList cur = s->u.print.exps;
     while(cur->kind == A_pairExpList) {

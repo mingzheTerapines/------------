@@ -12,6 +12,7 @@ int print_args(A_stm stm);
 int exp_args(A_exp exp);
 int maxargs(A_stm stm);
 
+//获取打印表达式里面参数数量
 int print_args(A_stm stm) {
 	int res = 0;
 	A_expList cur = stm->u.print.exps;
@@ -23,6 +24,8 @@ int print_args(A_stm stm) {
 	return res;
 }
 
+
+//递归计算并返回给定表达式中的最大参数数量
 int exp_args(A_exp exp) {
 	int res = 0;
 	if(exp->kind == A_eseqExp) {
@@ -31,6 +34,7 @@ int exp_args(A_exp exp) {
 	return res;
 }
 
+//计算并返回给定语句中的最大参数数量
 int maxargs(A_stm stm) {
 	int res = 0;
 	if(stm->kind == A_printStm) {
